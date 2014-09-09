@@ -48,6 +48,40 @@ OutputStream out = new BufferedOutputStream(new ObjectOutputStream(new FileOutpu
 
 读字符的操作接口中也是 int read(char cbuf[], int off, int len)，返回读到的 n 个字节数，不管是 Writer 还是 Reader 类它们都只定义了读取或写入的数据字符的方式，也就是怎么写或读，但是并没有规定数据要写到哪去，写到哪去就是我们后面要讨论的基于磁盘和网络的工作机制。
 
+##字节与字符的转化接口##
+
+另外数据持久化或网络传输都是以字节进行的，所以必须要有字符到字节或字节到字符的转化。字符到字节需要转化，其中读的转化过程如下图所示：
+
+图5.字符解码相关类结构
+
+![字符解码相关类结构](https://raw.githubusercontent.com/hongyuanlei/JAVA_THINKING/master/images/%E5%AD%97%E7%AC%A6%E8%A7%A3%E7%A0%81%E7%9B%B8%E5%85%B3%E7%B1%BB%E7%BB%93%E6%9E%84.jpg)
+
+InputStreamReader类是字节到字符的转化桥梁，InputStream到Reader的过程要指定编码字符集，否则将采用操作系统默认字符集，很可能会出现乱码。StreamDecoder正是完成字节到字符的解码的实现类。也就是当你用如果方式读取一个文件时：
+
+```Java
+ try { 
+            StringBuffer str = new StringBuffer(); 
+            char[] buf = new char[1024]; 
+            FileReader f = new FileReader("file"); 
+            while(f.read(buf)>0){ 
+                str.append(buf); 
+            } 
+            str.toString(); 
+ } catch (IOException e) {}
+```
+FileReader类就是按照上面的工作方式读取文件的，FileReader是继承了InputStreamReader类，实际上是读取文件流，然后通过StreamDecoder解码成char，只不过这里的解码字符集是默认字符集。
+
+写入也是类似的过程如下图所示：
+
+图 6. 字符编码相关类结构
+
+![字符编码相关类结构](https://github.com/hongyuanlei/JAVA_THINKING/blob/master/images/%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E7%9B%B8%E5%85%B3%E7%B1%BB%E7%BB%93%E6%9E%84.jpg)
+
+通过 OutputStreamWriter 类完成，字符到字节的编码过程，由 StreamEncoder 完成编码过程。
+
+
+
+
 
 
 
