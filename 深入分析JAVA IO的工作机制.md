@@ -16,6 +16,13 @@ Java的I/O操作类在包java.io下，大概有将近80个类，但是这些类�
 
 基于字节的I/O操作接口输入和输出分别是：InputStream和OutputStream,InputStream输入流的类继承层次如下图所示：
 
+图1.InputStream相关类层次结构图
+![InputStream相关类层次结构图](https://raw.githubusercontent.com/hongyuanlei/JAVA_THINKING/master/images/InputStream%E7%9B%B8%E5%85%B3%E7%B1%BB%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.jpg)
+
+输入流根据数据类型和操作方式又被划分成若干个子类，每个子类分别处理不同操作类型，OutputStream 输出流的类层次结构也是类似，如下图所示：
+
+图2.OutputStream相关类层次结构
+![OutputStream 相关类层次结构](https://raw.githubusercontent.com/hongyuanlei/JAVA_THINKING/master/images/OutputStream%E7%9B%B8%E5%85%B3%E7%B1%BB%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.jpg)
 
 
 
