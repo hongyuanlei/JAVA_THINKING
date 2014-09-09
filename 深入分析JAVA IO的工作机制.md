@@ -24,10 +24,29 @@ Java的I/O操作类在包java.io下，大概有将近80个类，但是这些类�
 图2.OutputStream相关类层次结构
 ![OutputStream 相关类层次结构](https://raw.githubusercontent.com/hongyuanlei/JAVA_THINKING/master/images/OutputStream%E7%9B%B8%E5%85%B3%E7%B1%BB%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.jpg)
 
+这里就不详细解释每个子类如何使用了，如果不清楚的话可以参考一下 JDK 的 API 说明文档，这里只想说明两点，一个是操作数据的方式是可以组合使用的，如这样组合使用
 
+```Java
+OutputStream out = new BufferedOutputStream(new ObjectOutputStream(new FileOutputStream(new File("path"))));
+```
 
+还有一点是流最终写到了什么地方必须要指定，要么是写到磁盘要么是写到网络中，其实从上面的类图中我们发现，写网络实际上也是写文件，只不过写网络还有一步需要处理就是底层操作系统再将数据传送到其它地方面不是本地磁盘。
 
+##基于字符的I/O操作接口##
 
+不管是磁盘还是网络传输，最小的存储单元都是字节，而不是字符，所以I/O操作的都是字节而不是字符，但是为啥有操作字符的I/O接口呢？这是因为我们的程序中通常操作的数据都是以字符形式，为了操作方便当然要提供一个直接写字符的I/O接口，如些而已。我们知道字符到字节必须要经过编码转码，而这个编码又非常耗时，而且还会经常出现乱码，所以I/O的编码问题经常让人头痛。
+
+下图是写字符的 I/O 操作接口涉及到的类，Writer 类提供了一个抽象方法 write(char cbuf[], int off, int len) 由子类去实现。
+
+图3.Writer 相关类层次结构
+![Writer 相关类层次结构](https://raw.githubusercontent.com/hongyuanlei/JAVA_THINKING/master/images/Writer%E7%9B%B8%E5%85%B3%E7%B1%BB%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.jpg)
+
+读字符的操作接口也有类似的类结构，如下图所示：
+
+图4.Reader 类层次结构
+![Reader 类层次结构](https://raw.githubusercontent.com/hongyuanlei/JAVA_THINKING/master/images/Reader%E7%B1%BB%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.jpg)
+
+读字符的操作接口中也是 int read(char cbuf[], int off, int len)，返回读到的 n 个字节数，不管是 Writer 还是 Reader 类它们都只定义了读取或写入的数据字符的方式，也就是怎么写或读，但是并没有规定数据要写到哪去，写到哪去就是我们后面要讨论的基于磁盘和网络的工作机制。
 
 
 
