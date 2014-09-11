@@ -12,3 +12,7 @@
 上述三句话一语道出了装饰器模式的特点，下面给出装饰器模式的类图：
 
 ![装饰器模式类图](https://raw.githubusercontent.com/hongyuanlei/JAVA_THINKING/master/images/%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%B1%BB%E5%9B%BE.jpg)
+
+下面给出IO包中所涉及的类的类图，可以和上面的标准装饰器模式对比一下：
+
+![IO包中所涉及的类的类图](https://raw.githubusercontent.com/hongyuanlei/JAVA_THINKING/master/images/IO%E5%8C%85%E4%B8%AD%E6%89%80%E6%B6%89%E5%8F%8A%E7%9A%84%E7%B1%BB%E7%9A%84%E7%B1%BB%E5%9B%BE.jpg)
