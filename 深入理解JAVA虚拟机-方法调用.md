@@ -19,6 +19,57 @@
 
 Java中的非虚方法除了使用invokestatic和invokespecial调用的方法之处还有一种，就是被final修饰的方法。虽然final方法使用invokevirtual指令来调用的，但是由于它无法被覆盖，没有其它版本，所以无须对方法接收者进行多态选择，又或者说多态选择的结果肯定是唯一的。`在Java语言规范中明确说明了final方法是一种非虚方法`。
 
-解析调用一定是个静态的过程，在编译期间就完全确定，在类装载的解析阶段就会把涉及的符号引用全部转变为可确定的直接引用，不会延迟到运行期再去完成。而分派（Dispatch）调用则可能是静态的也可能是动态的，根据分派依据的`宗量数`可分为`单分派`和`多分派`。这两类分派方式两两组合就构成了`静态单分派、静态多分派、动态单分派、动态多分派`四种分派情况。
+`解析调用一定是个静态的过程，在编译期间就完全确定`，在类装载的解析阶段就会把涉及的符号引用全部转变为可确定的直接引用，不会延迟到运行期再去完成。`而分派（Dispatch）调用则可能是静态的也可能是动态的`，根据分派依据的`宗量数`可分为`单分派`和`多分派`。这两类分派方式两两组合就构成了`静态单分派、静态多分派、动态单分派、动态多分派`四种分派情况。
+
+##分派
+
+####静态分派
+
+在开始讲解静态分派前，笔者准备了一段经常出现在面试题中和程序代码：
+
+```Java
+package thinking.jvm;
+
+public class StaticDispatch {
+
+	static abstract class Human{
+		
+	}
+	
+	static class Man extends Human{
+		
+	}
+	
+	static class Women extends Human{
+		
+	}
+	
+	public void sayHello(Human guy){
+		System.out.println("hello,guy!");
+	}
+	
+	public void sayHello(Man guy){
+		System.out.println("hello,gentleman!");
+	}
+	
+	public void sayHello(Women guy){
+		System.out.println("hello,lady!");
+	}
+	
+	public static void main(String[] args) {
+		Human man = new Man();
+		Human wowen = new Women();
+		StaticDispatch sd = new StaticDispatch();
+		sd.sayHello(man);
+		sd.sayHello(wowen);
+	}
+
+}
+```
+运行结果：
+```
+hello,guy!
+hello,guy!
+```
 
 
