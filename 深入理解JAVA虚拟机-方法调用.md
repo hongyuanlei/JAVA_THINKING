@@ -75,5 +75,71 @@ hello,guy!
 ```Java
 Human man = new Man();
 ```
-我们把上面代码中的“Human”称为变量的静态类型（Static Type）或者处观类型（Apparent Type），后面的“Man”则称为变量的实际类型（Actual Type），静态类型和实际类型在程序中都可以发生一些变化，区别是静态类型的变化仅仅在使用时发生，变量本身的静态类型不会被改变，并且最终的静态类型是在编译期可知的；而实际类型变化的结果在运行期才可确定，编译器在编译程序的时候并不知道一个对象的实际类型是什么。
+我们把上面代码中的“Human”称为变量的静态类型（Static Type）或者处观类型（Apparent Type），后面的“Man”则称为变量的实际类型（Actual Type），静态类型和实际类型在程序中都可以发生一些变化，区别是静态类型的变化仅仅在使用时发生，变量本身的静态类型不会被改变，并且最终的静态类型是在编译期可知的；而实际类型变化的结果在运行期才可确定，编译器在编译程序的时候并不知道一个对象的实际类型是什么。如下代码：
+```Java
+//实际类型变化
+Human man = new Man();
+man = new Women();
+//静态类型变化
+sd.sayHello((Man) man);
+sd.sayHello((Women) man);
+```
+解释了这两个概念，再回到StaticDispatch.java代码中。main()里面的两次sayHello()方法调用，在方法接收者已经确定是对象"sd"的前提下，使用哪个重载版本，就完全取决于传入参数的数量和数据类型。代码中刻意地定义了两个静态类型相同、实际类型不同的变量，`但虚拟机（准确地说是编译器）在重载时是通过参数的静态类型而不是实际类型作为判定依据`。并且静态类型是编译期可知的，所以在编译阶段，Javac编译器就根据参数类型决定使用哪个重载版本，所以选择了sayHello(Human)作为调用目标，并把这个方法的符号引用写到了main()方法里的两条invokevirtual指令的参数中。
+
+`所有依赖静态类型来定位方法执行版本的分派动作，都称为静态分派`。静态分派典型应用就是方法重载。静态分派发生在编译阶段，因此确定静态分派的动作实际上不是由虚拟机来执行的。另外，编译器虽然能确定出方法的重载版本，但在很多情况下这个重载版本并不是“唯一的”，往往只能确定一个“更加合适的”版本。产生这种模糊结论的主要原因是字面量不需要定义，所以字面量没有显式的静态类型，它的静态类型只能通过语言上的规则去理解和推断。下面代码演示了何为“更加合适的”版本。
+```Java
+package thinking.jvm;
+
+import java.io.Serializable;
+
+public class Overload {
+
+	public static void sayHello(Object arg){
+		System.out.println("hello Object");
+	}
+	
+	public static void sayHello(int arg){
+		System.out.println("hello int");
+	}
+	
+	public static void sayHello(long arg){
+		System.out.println("hello long");
+	}
+	
+	public static void sayHello(Character arg){
+		System.out.println("hello Character");
+	}
+	
+	public static void sayHello(char arg){
+		System.out.println("hello char");
+	}
+	
+	public static void sayHello(char... args){
+		System.out.println("hello char ...");
+	}
+	
+	public static void sayHello(Serializable arg){
+		System.out.println("hello Serializable");
+	}
+	
+	public static void sayHello(Comparable<Character> arg){
+		System.out.println("hello comparable");
+	}
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		sayHello('a');
+
+	}
+}
+```
+输出：
+```
+hello char
+```
+
+另外还有一点可能比较容易混淆：解析与分派这两者之间的关系并不是二选一的排他关系，它们是在不同层次上去筛选和确定目标方法的过程。例如，前面说过静态方法会在类加载期就进行解析，而静态方法显然也是可以拥有重载版本的，选择重载版本的过程是通过静态分派完成的。
+
 
